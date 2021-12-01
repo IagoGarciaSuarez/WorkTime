@@ -1,3 +1,6 @@
+import json
+from string import Template
+
 HELP_INFO = '''
 Available commands:
 > create <project>  --> Creates a project registry.
@@ -15,3 +18,22 @@ WORK_TIME_BANNER = '''
 '''
 
 TIME_FORMAT = '%d-%m-%Y - %H:%M:%S'
+
+STATS_TEMPLATE = '''
+Total time in $projectname\t$total_time
+'''
+
+def readWtFile(file):
+    with open(file, 'r') as f:
+        wtData = json.load(f)
+        f.close()
+    return wtData
+
+def writeWtFile(wtData, file):
+    with open(file, 'w+') as f:
+        json.dump(wtData, f) 
+        f.close()   
+
+def formatStats(projectname, total_time):
+    return Template(STATS_TEMPLATE).substitute(projectname=projectname, total_time=total_time)
+

@@ -1,4 +1,5 @@
 import json
+import os
 from string import Template
 
 HELP_INFO = '''
@@ -18,19 +19,21 @@ WORK_TIME_BANNER = '''
 '''
 
 TIME_FORMAT = '%d-%m-%Y - %H:%M:%S'
+WORKTIME_DIR = os.path.dirname(os.path.realpath(__file__))
 
 STATS_TEMPLATE = '''
 Total time in $projectname\t$total_time
 '''
-
 def readWtFile(file):
-    with open(file, 'r') as f:
+    worktimefile = os.path.join(WORKTIME_DIR, file)
+    with open(worktimefile, 'r') as f:
         wtData = json.load(f)
         f.close()
     return wtData
 
 def writeWtFile(wtData, file):
-    with open(file, 'w+') as f:
+    worktimefile = os.path.join(WORKTIME_DIR, file)
+    with open(worktimefile, 'w+') as f:
         json.dump(wtData, f) 
         f.close()   
 

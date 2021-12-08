@@ -4,7 +4,7 @@
 import cmd
 import os
 from os.path import isfile, splitext
-from utils import TIME_FORMAT, WORK_TIME_BANNER, formatStats, readWtFile, writeWtFile
+from utils import TIME_FORMAT, WORK_TIME_BANNER, WORKTIME_DIR, formatStats, readWtFile, writeWtFile
 from datetime import datetime
 
 class WorkTime(cmd.Cmd):
@@ -24,7 +24,7 @@ class WorkTime(cmd.Cmd):
             self.file = arg + '.wt'
             if not self.recording:
                 self.file = arg + '.wt'
-                if isfile(self.file):
+                if isfile(os.path.join(WORKTIME_DIR, self.file)):
                     self.start_time=datetime.today().strftime(TIME_FORMAT)
                     self.recording = True
                     self.fileRecording = self.file
@@ -62,9 +62,9 @@ class WorkTime(cmd.Cmd):
         else:
             self.file = arg + '.wt'
             if not self.recording:
-                if isfile(self.file):
+                if isfile(os.path.join(WORKTIME_DIR, self.file)):
                     if input(f'[CONFIRMATION] Are you sure you want to delete worktime data form project named \'{self.file}\'? (y/n)\n>') == 'y':
-                        os.remove(self.file)
+                        os.remove(os.path.join(WORKTIME_DIR, self.file))
                         print(f'[INFO] Worktime data from {arg} removed successfully.\n')
                     else:
                         print('[INFO] Project deletion cancelled.\n')
@@ -76,7 +76,7 @@ class WorkTime(cmd.Cmd):
 
     def do_listprojects(self, initial=None):
         'listprojects - Lists all projects in the current directory.\n'
-        for self.file in os.listdir("."):
+        for self.file in os.listdir(WORKTIME_DIR):
             if self.file.endswith(".wt"):
                 print(splitext(self.file)[0])
 
@@ -100,7 +100,7 @@ class WorkTime(cmd.Cmd):
         time_zero = datetime. strptime('00:00:00', '%H:%M:%S')
         result = datetime. strptime('00:00:00', '%H:%M:%S')
 
-        if isfile(self.file):
+        if isfile(os.path.join(WORKTIME_DIR, self.file)):
             wtData = readWtFile(self.file)
             for entry in wtData:
                 result = (result -time_zero + datetime.strptime(wtData[entry], '%H:%M:%S'))
